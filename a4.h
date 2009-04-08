@@ -1,5 +1,6 @@
 #include "heap.h"
 #include "process.h"
+#include "frameentry.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

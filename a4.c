@@ -1,10 +1,6 @@
 #include "a4.h"
 
-int main (int argc, char *argv[])
-{
-    char *subopts, *value;
-    int opt,
-    machine_size   = 0,
+int machine_size   = 0,
     page_size      = 0,
     process_size   = 0,
     job_mix        = 0,
@@ -14,6 +10,15 @@ int main (int argc, char *argv[])
     lru            = 0,
     no_pager       = 1;
     char *filename = NULL;
+
+void SetJobMix(int j);
+void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename);
+int fcfs_comparison(void *a, void *b);
+
+int main (int argc, char *argv[])
+{
+    char *subopts, *value;
+    int opt;
 
     if(argc == 1) {
         print_usage(argc, argv);
@@ -83,14 +88,25 @@ int main (int argc, char *argv[])
     return 0;
 }
 
+int fcfs_comparison(void *a, void *b)
+{
+    int retval;
+    retval = (int*)a - (int*)b;
+    return retval;
+}
+
 void run()
 {
-    GetRandomNumbers(filename);
     int num = 1;
-    double num2 = 0->0;
+    double num2 = 0.0;
     int nextReference = -1;
     int num5 = 0;
-    frame_entry *frame_table[MachineSize / PageSize];
+    frame_entry *frame_table[machine_size / page_size];
+    
+    heap *h = malloc(sizeof(heap));
+    heap_init(h);
+    GetRandomNumbers(h, &fcfs_comparison, filename);
+    
     while (RunningQueue->get_Count() > 0)
     {
         Process p = RunningQueue->Peek();
