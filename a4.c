@@ -1,17 +1,18 @@
-#include "a2.h"
+#include "a4.h"
 
 int main (int argc, char *argv[])
 {
     char *subopts, *value;
     int opt,
-        sjf            = 0,
-        fcfs           = 0,
-        srtf           = 0,
-        rr             = 0,
-        unix_sched     = 0,
-        verbose        = 0,
-        number_of_jobs = 0,
-        no_scheduler   = 1;
+	machine_size   = 0,
+        page_size      = 0,
+	process_size   = 0,
+	job_mix        = 0,
+	number_of_refs = 0,
+	fifo           = 0,
+        clock          = 0,
+	lru            = 0,
+	no_pager       = 1;
     char *filename     = NULL;
 
     if(argc == 1) {
@@ -24,72 +25,56 @@ int main (int argc, char *argv[])
         case 'h':
             print_usage(argc, argv);
             break;
-        case 'v':
-            verbose = 1;
+        case 'm':
+	    machine_size = atoi(optarg);
             break;
-        case 'n':
-            number_of_jobs = strtol(optarg, NULL, 10);
-            break;
-        case 'i':
-            filename = optarg;
+        case 'p':
+	    page_size = atoi(optarg);
             break;
         case 's':
+	    process_size = atoi(optarg);
+            break;
+        case 'j':
+	    job_mix = atoi(optarg);
+            break;
+        case 'n':
+            number_of_refs = atoi(optarg);
+            break;
+        case 'r':
             subopts = optarg;
             while(*subopts != '\0')
-                switch(getsubopt(&subopts, scheduler_opts, &value))
+                switch(getsubopt(&subopts, pager_opts, &value))
             {
-                case SJF:
-                    sjf = 1;
+                case FIFO:
+                    fifo = 1;
                     break;
-                case FCFS:
-                    fcfs = 1;
+                case CLOCK:
+                    clock = 1;
                     break;
-                case SRTF:
-                    srtf = 1;
-                    break;
-                case RR:
-                    rr = 1;
-                    break;
-                case UNIX:
-                    unix_sched = 1;
+                case LRU:
+                    lru = 1;
                     break;
                 default:
-                    printf("unknown scheduler passed in list to -s\n");
+                    printf("unknown pager passed in list to -s\n");
                     break;
             }
-            no_scheduler = 0;
+            no_pager = 0;
             break;
         default:
             print_usage(argc, argv);
             abort();
             break;
     }
-    if(number_of_jobs > 0 && filename) {
-        fprintf(stderr, "cannot specify both -n and -i parameters.\n");
-        print_usage(argc, argv);
-        return 1;
-    }
-    if(number_of_jobs == 0 && filename == NULL) {
-        fprintf(stderr, "must specify either -n or -i parameter.\n");
-        print_usage(argc, argv);
-        return 1;
-    }
-    if(no_scheduler) {
-        fprintf(stderr, "must specify a scheduler with -s parameter.\n");
-        print_usage(argc, argv);
-        return 1;
-    }
+    
+    printf("m = %d\n", machine_size);
+    printf("p = %d\n", page_size);
+    printf("s = %d\n", process_size);
+    printf("j = %d\n", job_mix);
+    printf("n = %d\n", number_of_refs);
+    printf("fifo  = %d\n", fifo);
+    printf("clock = %d\n", clock);
+    printf("lru   = %d\n", lru);
 
-    if(sjf)
-        process_jobs(sjf_comparison, filename, number_of_jobs, verbose);
-    if(fcfs)
-        process_jobs(fcfs_comparison, filename, number_of_jobs, verbose);
-    if(srtf)
-        process_jobs(srtf_comparison, filename, number_of_jobs, verbose);
-    if(rr)
-        process_jobs(rr_comparison, filename, number_of_jobs, verbose);
-    if(unix_sched)
-        process_jobs(unix_comparison, filename, number_of_jobs, verbose);
     return 0;
 }
 
