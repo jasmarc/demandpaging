@@ -85,78 +85,74 @@ int main (int argc, char *argv[])
 
 void run()
 {
-/*     this.GetRandomNumbers("random-numbers");
+    GetRandomNumbers(filename);
     int num = 1;
-    double num2 = 0.0;
+    double num2 = 0->0;
     int nextReference = -1;
     int num5 = 0;
-    this.frame_table = new FrameTable(this.MachineSize / this.PageSize);
-    while (this.RunningQueue.get_Count() > 0)
+    frame_entry *frame_table[MachineSize / PageSize];
+    while (RunningQueue->get_Count() > 0)
     {
-        Process p = this.RunningQueue.Peek();
-        for (int i = 0; i < this.Quantum; i++)
+        Process p = RunningQueue->Peek();
+        for (int i = 0; i < Quantum; i++)
         {
-            if (p.NumberOfReferences == this.NumberOfReferences)
-            {
-                nextReference = (0x6f * p.ID) % this.SizeOfProcess;
+            if (p->NumberOfReferences == NumberOfReferences) {
+                nextReference = (0x6f * p->ID) % SizeOfProcess;
             }
-            if (p.NextReference != -1)
-            {
-                nextReference = p.NextReference;
-                p.NextReference = -1;
+            if (p->NextReference != -1) {
+                nextReference = p->NextReference;
+                p->NextReference = -1;
             }
-            p.CurrentReference = nextReference;
-            FrameEntry entry = null;
-            if (this.ReplacementAlgorithim == Algorithim.FIFO)
+            p->CurrentReference = nextReference;
+            frame_entry *entry = NULL;
+            switch(ReplacementAlgorithim)
             {
-                entry = this.frame_table.simulate_fifo(this, this.GetPage(p.CurrentReference), num, p.ID);
+                case FIFO:
+                    entry = simulate_fifo(frame_table, GetPage(p->CurrentReference), num, p->ID);
+                    break;
+                case CLOCK:
+                    entry = simulate_random(frame_table, GetPage(p->CurrentReference), num, p->ID);
+                    break;
+                case LRU:
+                    entry = simulate_lru(frame_table, GetPage(p->CurrentReference), num, p->ID);
+                    break;
+                default:
+                    // todo: error handling
+                    break;
             }
-            else if (this.ReplacementAlgorithim == Algorithim.LRU)
-            {
-                entry = this.frame_table.simulate_lru(this, this.GetPage(p.CurrentReference), num, p.ID);
-            }
-            else if (this.ReplacementAlgorithim == Algorithim.Random)
-            {
-                entry = this.frame_table.simulate_random(this, this.GetPage(p.CurrentReference), num, p.ID);
-            }
-            if (entry.PageFault)
+            if (entry->PageFault)
             {
                 num5++;
             }
-            p.NumberOfReferences--;
-            num2 = this.GetNextRandom() / 2147483648;
-            if (num2 < p.A)
-            {
-                nextReference = (p.CurrentReference + 1) % this.SizeOfProcess;
+            p->NumberOfReferences--;
+            num2 = GetNextRandom() / 2147483648;
+            if (num2 < p->A) {
+                nextReference = (p->CurrentReference + 1) % SizeOfProcess;
             }
-            else if (num2 < (p.A + p.B))
-            {
-                nextReference = ((p.CurrentReference - 5) + this.SizeOfProcess) % this.SizeOfProcess;
+            else if (num2 < (p->A + p->B)) {
+                nextReference = ((p->CurrentReference - 5) + SizeOfProcess) % SizeOfProcess;
             }
-            else if (num2 < ((p.A + p.B) + p.C))
-            {
-                nextReference = (p.CurrentReference + 4) % this.SizeOfProcess;
+            else if (num2 < ((p->A + p->B) + p->C)) {
+                nextReference = (p->CurrentReference + 4) % SizeOfProcess;
             }
-            else if (num2 >= ((p.A + p.B) + p.C))
-            {
-                int nextRandom = this.GetNextRandom();
-                nextReference = nextRandom % this.SizeOfProcess;
+            else if (num2 >= ((p->A + p->B) + p->C)) {
+                int nextRandom = GetNextRandom();
+                nextReference = nextRandom % SizeOfProcess;
             }
             num++;
-            if (this.CanTerminate(p))
-            {
+            if (CanTerminate(p)) {
                 break;
             }
         }
-        p.NextReference = nextReference;
-        this.RunningQueue.Dequeue();
-        if (!this.CanTerminate(p))
+        p->NextReference = nextReference;
+        RunningQueue->Dequeue();
+        if (!CanTerminate(p))
         {
-            this.RunningQueue.Enqueue(p);
-            this.Quantum = 3;
+            RunningQueue->Enqueue(p);
+            Quantum = 3;
         }
     }
-    this.Print_Result(); */
+    Print_Result();
 }
 
 void SetJobMix(int j)
@@ -192,9 +188,10 @@ void SetJobMix(int j)
             process_new(processes[3], 4, 0.5, 0.125, 0.125, NumberOfReferences);
             break;
         default:
-            // handle error here
+            // todo: handle error here
             break;
     }
+    // todo: enqueue processes here
 }
  
 void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename)
