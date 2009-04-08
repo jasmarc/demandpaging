@@ -1,29 +1,16 @@
-typedef struct {
-    double A;
-    double B;
-    double C;
-    int CurrentReference;
-    int Evicted;
-    int ID;
-    int NextReference;
-    int NumberOfReferences;
-    int PageFaults;
-    int Random;
-    bool Terminated;
-    int TotalResidency;
-} process;
+#include "process.h"
 
-void process_new(process *p)
+void process_new(process *p, int ID, double A, double B, double C, int R)
 {
     p = malloc(sizeof(process));
-    p->A                  = 0;
-    p->B                  = 0;
-    p->C                  = 0;
+    p->A                  = A;
+    p->B                  = B;
+    p->C                  = C;
     p->CurrentReference   = 0;
     p->Evicted            = 0;
-    p->ID                 = 0;
-    p->NextReference      = 0;
-    p->NumberOfReferences = 0;
+    p->ID                 = ID;
+    p->NextReference      = -1;
+    p->NumberOfReferences = R;
     p->PageFaults         = 0;
     p->Random             = 0;
     p->Terminated         = FALSE;

@@ -85,7 +85,7 @@ int main (int argc, char *argv[])
 
 void run()
 {
-    this.GetRandomNumbers("random-numbers");
+/*     this.GetRandomNumbers("random-numbers");
     int num = 1;
     double num2 = 0.0;
     int nextReference = -1;
@@ -156,82 +156,72 @@ void run()
             this.Quantum = 3;
         }
     }
-    this.Print_Result();
+    this.Print_Result(); */
 }
 
-private void SetJobMix(int j)
+void SetJobMix(int j)
 {
-    if (j == 1)
+    process *processes[4];
+    int NumberOfProcesses; // todo: move this
+    int NumberOfReferences = 0; // todo: move this
+    switch(j)
     {
-        this.ProcessArray = new ArrayList(1);
-        Process process = new Process(1, 1.0, 0.0, 0.0, this.NumberOfReferences);
-        this.ProcessArray.Add(process);
-    }
-    else if (j == 2)
-    {
-        this.ProcessArray = new ArrayList(4);
-        Process process2 = new Process(1, 1.0, 0.0, 0.0, this.NumberOfReferences);
-        Process process3 = new Process(2, 1.0, 0.0, 0.0, this.NumberOfReferences);
-        Process process4 = new Process(3, 1.0, 0.0, 0.0, this.NumberOfReferences);
-        Process process5 = new Process(4, 1.0, 0.0, 0.0, this.NumberOfReferences);
-        this.ProcessArray.Add(process2);
-        this.ProcessArray.Add(process3);
-        this.ProcessArray.Add(process4);
-        this.ProcessArray.Add(process5);
-    }
-    else if (j == 3)
-    {
-        this.ProcessArray = new ArrayList(4);
-        Process process6 = new Process(1, 0.0, 0.0, 0.0, this.NumberOfReferences);
-        Process process7 = new Process(2, 0.0, 0.0, 0.0, this.NumberOfReferences);
-        Process process8 = new Process(3, 0.0, 0.0, 0.0, this.NumberOfReferences);
-        Process process9 = new Process(4, 0.0, 0.0, 0.0, this.NumberOfReferences);
-        this.ProcessArray.Add(process6);
-        this.ProcessArray.Add(process7);
-        this.ProcessArray.Add(process8);
-        this.ProcessArray.Add(process9);
-    }
-    else if (j == 4)
-    {
-        this.ProcessArray = new ArrayList(4);
-        Process process10 = new Process(1, 0.75, 0.25, 0.0, this.NumberOfReferences);
-        Process process11 = new Process(2, 0.75, 0.0, 0.25, this.NumberOfReferences);
-        Process process12 = new Process(3, 0.75, 0.125, 0.125, this.NumberOfReferences);
-        Process process13 = new Process(4, 0.5, 0.125, 0.125, this.NumberOfReferences);
-        this.ProcessArray.Add(process10);
-        this.ProcessArray.Add(process11);
-        this.ProcessArray.Add(process12);
-        this.ProcessArray.Add(process13);
-    }
-    this.NumberOfProcesses = this.ProcessArray.get_Count();
-    this.RunningQueue = new Queue();
-    foreach (Process process14 in this.ProcessArray)
-    {
-        this.RunningQueue.Enqueue(process14);
+        case 1:
+            NumberOfProcesses = 1;
+            process_new(processes[0], 1, 1.0, 0.0, 0.0, NumberOfReferences);
+            break;
+        case 2:
+            NumberOfProcesses = 4;
+            process_new(processes[0], 1, 1.0, 0.0, 0.0, NumberOfReferences);
+            process_new(processes[1], 2, 1.0, 0.0, 0.0, NumberOfReferences);
+            process_new(processes[2], 3, 1.0, 0.0, 0.0, NumberOfReferences);
+            process_new(processes[3], 4, 1.0, 0.0, 0.0, NumberOfReferences);
+            break;
+        case 3:
+            NumberOfProcesses = 4;
+            process_new(processes[0], 1, 0.0, 0.0, 0.0, NumberOfReferences);
+            process_new(processes[1], 2, 0.0, 0.0, 0.0, NumberOfReferences);
+            process_new(processes[2], 3, 0.0, 0.0, 0.0, NumberOfReferences);
+            process_new(processes[3], 4, 0.0, 0.0, 0.0, NumberOfReferences);
+            break;
+        case 4:
+            NumberOfProcesses = 4;
+            process_new(processes[0], 1, 0.75, 0.25, 0.0, NumberOfReferences);
+            process_new(processes[1], 2, 0.75, 0.0, 0.25, NumberOfReferences);
+            process_new(processes[2], 3, 0.75, 0.125, 0.125, NumberOfReferences);
+            process_new(processes[3], 4, 0.5, 0.125, 0.125, NumberOfReferences);
+            break;
+        default:
+            // handle error here
+            break;
     }
 }
  
-public void GetRandomNumbers(string filename)
+void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename)
 {
-    string str = "";
-    try
-    {
-        str = new StreamReader(filename).ReadToEnd();
-    }
-    catch
-    {
-        this.frmMainCopy.PrintOutput("ERROR!: Unable To Locate/Open \"random-numbers\" input file. Please copy this file into current workin direcotry", false);
-        Environment.Exit(0);
-    }
-    if (str != "")
-    {
-        char ch = '\n';
-        foreach (string str2 in str.Split(new char[] { ch }))
-        {
-            if (str2 != "")
-            {
-                this.Q_Random_Integers.Enqueue(double.Parse(str2));
-            }
+    char buffer[256];
+    FILE *fp = NULL;
+    if((fp = fopen(filename, "r"))) {
+        while (!feof(fp)) {
+            fgets(buffer, 256, fp); // read a line
+ 
+            // tokenize the line by commas and newlines
+/*             if(strlen(buffer) > 1) {
+                if((temp = strtok(buffer, ",\n")) != NULL && strlen(temp) > 0)
+                    arrive += strtol(temp, NULL, 10);
+                if((temp = strtok(NULL, ",\n")) != NULL && strlen(temp) > 0)
+                    burst = strtol(temp, NULL, 10);
+                job *temp = malloc(sizeof(job)); // create a new job
+                build_job(temp, i++, arrive, burst); // populate it
+                heap_insert(h, comp_func, temp); // stick it in the queue
+            } */
+            printf("%s", buffer);
         }
+        fclose(fp);
     }
+    else {
+        fprintf(stderr, "error opening file %s\n", filename);
+        exit(1);
+    }
+    return;
 }

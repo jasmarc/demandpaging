@@ -1,10 +1,10 @@
 typedef struct {
     int cpu_time;
-    bool empty;
+    int empty;
     int frame_id;
     int last_used;
     int page;
-    bool PageFault;
+    int PageFault;
     int process_id;
 } frame_entry;
 
