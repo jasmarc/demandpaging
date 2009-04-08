@@ -1,28 +1,11 @@
-#include <inttypes.h>
-#include <limits.h>
-#include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <time.h>
 #include <unistd.h>
 #include "heap.h"
 
 #define TRUE  1
 #define FALSE 0
-
-typedef struct {
-    int id,         // the id of the job
-        arrive,     // the arrive time
-        burst,      // the remaining burst time
-        waiting,    // the cumulative wait time
-        start,      // the start time
-        end,        // the end time
-        priority,   // the priority of the job
-        service;    // most recent service time
-} job;
 
 // Pager Algorithms (used by getopts parser)
 enum {
@@ -44,14 +27,16 @@ char *pager_opts[] = {
 void print_usage(int argc, char *argv[])
 {
     printf("usage:\t\t%s [OPTIONS]\n", argv[0]);
-    printf("example:\t%s -i data.txt -s sjf,fcfs,srtf -v\n", argv[0]);
-    printf("\t\t%s -n 5 -s sjf\n", argv[0]);
+    printf("example:\t%s -i data.txt -m1 -p2 -s3 -j4 -n5 -r fifo\n", argv[0]);
     printf("options:\n");
     printf(" -h\t\tPrint this message.\n");
     printf(" -i <file>\tRead comma-separated file with arrive,burst\n");
-    printf(" -n <number>\tNumber of jobs to generate if not reading from file.\n");
-    printf(" -s <sched(s)>\tSpecify pager(s) to use.\n");
-    printf(" \t\tValid pagers are: sjf, fcfs, srtf, rr, unix\n");
-    printf(" -v\t\tVerbose mode. Prints an output for each CPU cycle.\n");
+    printf(" -m\t\tThe machine size (in words)\n");
+    printf(" -p\t\tThe page size (in words)\n");
+    printf(" -s\t\tThe size of a processes\n");
+    printf(" -j\t\tThe 'job mix'\n");
+    printf(" -n\t\tThe number of simulated references for each process\n");
+    printf(" -r <pager(s)>\tSpecify pager(s) to use.\n");
+    printf(" \t\tValid pagers are: fifo, clock, lru\n");
     return;
 }

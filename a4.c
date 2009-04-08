@@ -4,38 +4,38 @@ int main (int argc, char *argv[])
 {
     char *subopts, *value;
     int opt,
-	machine_size   = 0,
-        page_size      = 0,
-	process_size   = 0,
-	job_mix        = 0,
-	number_of_refs = 0,
-	fifo           = 0,
-        clock          = 0,
-	lru            = 0,
-	no_pager       = 1;
+    machine_size   = 0,
+    page_size      = 0,
+    process_size   = 0,
+    job_mix        = 0,
+    number_of_refs = 0,
+    fifo           = 0,
+    clock          = 0,
+    lru            = 0,
+    no_pager       = 1;
     char *filename     = NULL;
 
     if(argc == 1) {
         print_usage(argc, argv);
         return 1;
     }
-    while((opt = getopt(argc, argv, "hvn:i:s:")) != -1)
+    while((opt = getopt(argc, argv, "hm:p:s:j:n:r:")) != -1)
         switch(opt)
     {
         case 'h':
             print_usage(argc, argv);
             break;
         case 'm':
-	    machine_size = atoi(optarg);
+            machine_size = atoi(optarg);
             break;
         case 'p':
-	    page_size = atoi(optarg);
+            page_size = atoi(optarg);
             break;
         case 's':
-	    process_size = atoi(optarg);
+            process_size = atoi(optarg);
             break;
         case 'j':
-	    job_mix = atoi(optarg);
+            job_mix = atoi(optarg);
             break;
         case 'n':
             number_of_refs = atoi(optarg);
