@@ -8,8 +8,11 @@ int machine_size   = 0,
     fifo           = 0,
     clock          = 0,
     lru            = 0,
+    ReplacementAlgorithim = 0,
     no_pager       = 1;
-    char *filename = NULL;
+char *filename = NULL;
+    
+heap *RunningQueue;
 
 void SetJobMix(int j);
 void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename);
@@ -52,7 +55,7 @@ int main (int argc, char *argv[])
         case 'r':
             subopts = optarg;
             while(*subopts != '\0')
-                switch(getsubopt(&subopts, pager_opts, &value))
+                switch(ReplacementAlgorithim = getsubopt(&subopts, pager_opts, &value))
             {
                 case FIFO:
                     fifo = 1;
@@ -101,19 +104,20 @@ void run()
     double num2 = 0.0;
     int nextReference = -1;
     int num5 = 0;
+    int i = 0;
+    int Quantum = 3;
     frame_entry *frame_table[machine_size / page_size];
     
-    heap *h = malloc(sizeof(heap));
-    heap_init(h);
-    GetRandomNumbers(h, &fcfs_comparison, filename);
-    
-    while (RunningQueue->get_Count() > 0)
+    heap *Q_Random_Integers = malloc(sizeof(heap));
+    heap_init(Q_Random_Integers);
+    GetRandomNumbers(Q_Random_Integers, &fcfs_comparison, filename);
+    process *p = NULL;
+    while (p = heap_extract_max(RunningQueue, &fcfs_comparison))
     {
-        Process p = RunningQueue->Peek();
-        for (int i = 0; i < Quantum; i++)
+        for (i = 0; i < Quantum; i++)
         {
-            if (p->NumberOfReferences == NumberOfReferences) {
-                nextReference = (0x6f * p->ID) % SizeOfProcess;
+            if (p->NumberOfReferences == number_of_refs) {
+                nextReference = (0x6f * p->ID) % process_size;
             }
             if (p->NextReference != -1) {
                 nextReference = p->NextReference;
@@ -121,54 +125,55 @@ void run()
             }
             p->CurrentReference = nextReference;
             frame_entry *entry = NULL;
-            switch(ReplacementAlgorithim)
-            {
-                case FIFO:
-                    entry = simulate_fifo(frame_table, GetPage(p->CurrentReference), num, p->ID);
-                    break;
-                case CLOCK:
-                    entry = simulate_random(frame_table, GetPage(p->CurrentReference), num, p->ID);
-                    break;
-                case LRU:
-                    entry = simulate_lru(frame_table, GetPage(p->CurrentReference), num, p->ID);
-                    break;
-                default:
-                    // todo: error handling
-                    break;
-            }
+            // todo: implement
+            // switch(ReplacementAlgorithim)
+            // {
+            //     case FIFO:
+            //         entry = simulate_fifo(frame_table, GetPage(p->CurrentReference), num, p->ID);
+            //         break;
+            //     case CLOCK:
+            //         entry = simulate_random(frame_table, GetPage(p->CurrentReference), num, p->ID);
+            //         break;
+            //     case LRU:
+            //         entry = simulate_lru(frame_table, GetPage(p->CurrentReference), num, p->ID);
+            //         break;
+            //     default:
+            //         // todo: error handling
+            //         break;
+            // }
             if (entry->PageFault)
             {
                 num5++;
             }
             p->NumberOfReferences--;
-            num2 = GetNextRandom() / 2147483648;
+            num2 = *(int*)heap_extract_max(Q_Random_Integers, fcfs_comparison) / 2147483648;
             if (num2 < p->A) {
-                nextReference = (p->CurrentReference + 1) % SizeOfProcess;
+                nextReference = (p->CurrentReference + 1) % process_size;
             }
             else if (num2 < (p->A + p->B)) {
-                nextReference = ((p->CurrentReference - 5) + SizeOfProcess) % SizeOfProcess;
+                nextReference = ((p->CurrentReference - 5) + process_size) % process_size;
             }
             else if (num2 < ((p->A + p->B) + p->C)) {
-                nextReference = (p->CurrentReference + 4) % SizeOfProcess;
+                nextReference = (p->CurrentReference + 4) % process_size;
             }
             else if (num2 >= ((p->A + p->B) + p->C)) {
-                int nextRandom = GetNextRandom();
-                nextReference = nextRandom % SizeOfProcess;
+                int nextRandom = *(int*)heap_extract_max(Q_Random_Integers, fcfs_comparison);
+                nextReference = nextRandom % process_size;
             }
             num++;
-            if (CanTerminate(p)) {
+            if (p->NumberOfReferences == 0) {
                 break;
             }
         }
         p->NextReference = nextReference;
-        RunningQueue->Dequeue();
-        if (!CanTerminate(p))
+        //RunningQueue->Dequeue();
+        if (p->NumberOfReferences != 0)
         {
-            RunningQueue->Enqueue(p);
+            heap_insert(RunningQueue, fcfs_comparison, p);
             Quantum = 3;
         }
     }
-    Print_Result();
+    // Print_Result();
 }
 
 void SetJobMix(int j)
@@ -208,6 +213,11 @@ void SetJobMix(int j)
             break;
     }
     // todo: enqueue processes here
+    heap_init(RunningQueue);
+    int i;
+    for(i = 0; i < NumberOfProcesses; ++i) {
+        heap_insert(RunningQueue, &fcfs_comparison, processes[i]);
+    }
 }
  
 void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename)
