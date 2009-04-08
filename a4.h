@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <xlocale.h>
-
 
 #define TRUE  1
 #define FALSE 0
