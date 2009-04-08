@@ -1,8 +1,11 @@
+#include "heap.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
-#include "heap.h"
+#include <xlocale.h>
+
 
 #define TRUE  1
 #define FALSE 0

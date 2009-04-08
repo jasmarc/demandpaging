@@ -13,17 +13,21 @@ int main (int argc, char *argv[])
     clock          = 0,
     lru            = 0,
     no_pager       = 1;
-    char *filename     = NULL;
+    char *filename = NULL;
 
     if(argc == 1) {
         print_usage(argc, argv);
         return 1;
     }
-    while((opt = getopt(argc, argv, "hm:p:s:j:n:r:")) != -1)
+    while((opt = getopt(argc, argv, "hi:m:p:s:j:n:r:")) != -1)
         switch(opt)
     {
         case 'h':
             print_usage(argc, argv);
+            break;
+        case 'i':
+            filename = malloc(sizeof(optarg));
+            strcpy(filename, optarg);
             break;
         case 'm':
             machine_size = atoi(optarg);
@@ -74,6 +78,7 @@ int main (int argc, char *argv[])
     printf("fifo  = %d\n", fifo);
     printf("clock = %d\n", clock);
     printf("lru   = %d\n", lru);
+    printf("filename = %s\n", filename);
 
     return 0;
 }
