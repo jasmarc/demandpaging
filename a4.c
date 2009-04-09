@@ -14,7 +14,6 @@ int machine_size   = 0,
 char *filename = NULL;
 extern process *ProcessArray[4];
 int NumberOfProcesses;
-int NumberOfReferences = 0;
 fifo_queue *RunningQueue;
 fifo_queue *RandomNumbers;
 
@@ -107,14 +106,14 @@ void run()
     
     GetRandomNumbers(filename);
     process *p = NULL;
-    while (p = peek(RunningQueueueue))
+    while (p = peek(RunningQueue))
     {
         assert(p != NULL);
 //        printf("process id = %d\n", p->ID);
         for (i = 0; i < Quantum; i++)
         {
             if (p->NumberOfReferences == number_of_refs) {
-                nextReference = (0x6f * p->ID) % process_size;
+                nextReference = (111 * p->ID) % process_size;
             }
             if (p->NextReference != -1) {
                 nextReference = p->NextReference;
@@ -179,28 +178,28 @@ void SetJobMix(int j)
     {
         case 1:
             NumberOfProcesses = 1;
-            ProcessArray[0] = process_new(1, 1.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[0] = process_new(1, 1.0, 0.0, 0.0, number_of_refs);
             break;
         case 2:
             NumberOfProcesses = 4;
-            ProcessArray[0] = process_new(1, 1.0, 0.0, 0.0, NumberOfReferences);
-            ProcessArray[1] = process_new(2, 1.0, 0.0, 0.0, NumberOfReferences);
-            ProcessArray[2] = process_new(3, 1.0, 0.0, 0.0, NumberOfReferences);
-            ProcessArray[3] = process_new(4, 1.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[0] = process_new(1, 1.0, 0.0, 0.0, number_of_refs);
+            ProcessArray[1] = process_new(2, 1.0, 0.0, 0.0, number_of_refs);
+            ProcessArray[2] = process_new(3, 1.0, 0.0, 0.0, number_of_refs);
+            ProcessArray[3] = process_new(4, 1.0, 0.0, 0.0, number_of_refs);
             break;
         case 3:
             NumberOfProcesses = 4;
-            ProcessArray[0] = process_new(1, 0.0, 0.0, 0.0, NumberOfReferences);
-            ProcessArray[1] = process_new(2, 0.0, 0.0, 0.0, NumberOfReferences);
-            ProcessArray[2] = process_new(3, 0.0, 0.0, 0.0, NumberOfReferences);
-            ProcessArray[3] = process_new(4, 0.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[0] = process_new(1, 0.0, 0.0, 0.0, number_of_refs);
+            ProcessArray[1] = process_new(2, 0.0, 0.0, 0.0, number_of_refs);
+            ProcessArray[2] = process_new(3, 0.0, 0.0, 0.0, number_of_refs);
+            ProcessArray[3] = process_new(4, 0.0, 0.0, 0.0, number_of_refs);
             break;
         case 4:
             NumberOfProcesses = 4;
-            ProcessArray[0] = process_new(1, 0.75, 0.25, 0.0, NumberOfReferences);
-            ProcessArray[1] = process_new(2, 0.75, 0.0, 0.25, NumberOfReferences);
-            ProcessArray[2] = process_new(3, 0.75, 0.125, 0.125, NumberOfReferences);
-            ProcessArray[3] = process_new(4, 0.5, 0.125, 0.125, NumberOfReferences);
+            ProcessArray[0] = process_new(1, 0.75, 0.25, 0.0, number_of_refs);
+            ProcessArray[1] = process_new(2, 0.75, 0.0, 0.25, number_of_refs);
+            ProcessArray[2] = process_new(3, 0.75, 0.125, 0.125, number_of_refs);
+            ProcessArray[3] = process_new(4, 0.5, 0.125, 0.125, number_of_refs);
             break;
         default:
             // todo: handle error here
