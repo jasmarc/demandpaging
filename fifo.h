@@ -17,5 +17,6 @@ fifo_node *fifo_node_new(void *value);
 fifo_queue *fifo_queue_new();
 void *dequeue(fifo_queue *fq);
 void enqueue(fifo_queue *fq, void *value);
+void *peek(fifo_queue *fq);
 
 #endif /* FIFO_QUEUE_H */

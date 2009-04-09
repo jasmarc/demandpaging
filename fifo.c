@@ -42,3 +42,9 @@ void enqueue(fifo_queue *fq, void *value)
         fq->back = fn;
     }
 }
+
+void *peek(fifo_queue *fq)
+{
+    fifo_node *fn = fq->front;
+    return fn == NULL ? NULL : fn->value;
+}

@@ -5,11 +5,15 @@ frame_table *frame_table_new(int frame_table_size)
 {
     frame_table *f = malloc(sizeof(frame_table));
     f->max = frame_table_size;
-    f->count = 0;
+    f->count = frame_table_size;
     int i;
-    for(i = 0; i < f->max; ++i)
-    {
+    for(i = 0; i < f->max; ++i) {
         f->framelist[i] = NULL;
+    }
+    for(i = 0; i < frame_table_size; ++i) {
+	frame_entry *fe = frame_entry_new();
+	fe->empty = TRUE;
+	f->framelist[i] = fe;
     }
     return f;
 }

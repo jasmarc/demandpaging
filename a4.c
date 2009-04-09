@@ -14,7 +14,7 @@ char *filename = NULL;
 extern process *ProcessArray[4];
 int NumberOfProcesses;
 int NumberOfReferences = 0;
-heap *RunningQueue;
+fifo_queue *RunningQueue;
 fifo_queue *RandomNumbers;
 
 int main (int argc, char *argv[])
@@ -86,16 +86,10 @@ int main (int argc, char *argv[])
     printf("clock = %d\n", clock);
     printf("lru   = %d\n", lru);
     printf("filename = %s\n", filename);
+    SetJobMix(job_mix);
     run();
     printf("done\n");
     return 0;
-}
-
-int fcfs_process_comparison(void *a, void *b)
-{
-    int retval;
-    retval = ((process*)a)->ID - ((process*)b)->ID;
-    return retval;
 }
 
 void run()
@@ -110,7 +104,7 @@ void run()
     
     GetRandomNumbers(filename);
     process *p = NULL;
-    while (p = heap_extract_max(RunningQueue, &fcfs_process_comparison))
+    while (p = )
     {
         for (i = 0; i < Quantum; i++)
         {
@@ -163,10 +157,10 @@ void run()
             }
         }
         p->NextReference = nextReference;
-        //RunningQueue->Dequeue();
+        dequeue(RunningQueue);
         if (p->NumberOfReferences != 0)
         {
-            heap_insert(RunningQueue, fcfs_process_comparison, p);
+            enqueue(RunningQueue, p);
             Quantum = 3;
         }
     }
@@ -206,10 +200,10 @@ void SetJobMix(int j)
             // todo: handle error here
             break;
     }
-    heap_init(RunningQueue);
+    RunningQueue = fifo_queue_new();
     int i;
     for(i = 0; i < NumberOfProcesses; ++i) {
-        heap_insert(RunningQueue, &fcfs_process_comparison, ProcessArray[i]);
+        enqueue(RunningQueue, ProcessArray[i]);
     }
 }
  
@@ -246,7 +240,7 @@ int GetNextRandomNumber()
 void print_usage(int argc, char *argv[])
 {
     printf("usage:\t\t%s [OPTIONS]\n", argv[0]);
-    printf("example:\t%s -i data.txt -m1 -p2 -s3 -j4 -n5 -r fifo\n", argv[0]);
+    printf("example:\t%s -m9 -p3 -s3 -j4 -n5 -r fifo -i data.txt\n", argv[0]);
     printf("options:\n");
     printf(" -h\t\tPrint this message.\n");
     printf(" -i <file>\tRead comma-separated file with arrive,burst\n");
@@ -259,4 +253,3 @@ void print_usage(int argc, char *argv[])
     printf(" \t\tValid pagers are: fifo, clock, lru\n");
     return;
 }
-

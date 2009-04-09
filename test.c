@@ -78,7 +78,7 @@ static char * test_frame_table() {
     mu_assert("frame table not null", ft != NULL);
     mu_assert("ft->framelist", ft->framelist[0] != NULL);
     mu_assert("ft->max", ft->max == 2);
-    mu_assert("ft->count", ft->count == 0);
+    mu_assert("ft->count", ft->count == 2);
     return 0;
 }
 
@@ -94,6 +94,10 @@ static char * test_fifo() {
     *b = 6;
     enqueue(fq, a);
     enqueue(fq, b);
+    int *c;
+    c = peek(fq);
+    printf("c = %d", *c);
+    mu_assert("test peek", *c == 5);
     int *x, *y;
     x = dequeue(fq);
     y = dequeue(fq);
