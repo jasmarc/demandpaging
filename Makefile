@@ -3,7 +3,7 @@ CFLAGS = -g -Wall
 EXEC = a4
 
 $(EXEC): 
-	$(CC) $(CFLAGS) -o $(EXEC) a4.c heap.c process.c frameentry.c frametable.c
+	$(CC) $(CFLAGS) -o $(EXEC) a4.c heap.c process.c frameentry.c frametable.c fifo.c
 clean:
 	-rm $(EXEC)
 	-rm *.exe

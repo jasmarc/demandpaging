@@ -15,7 +15,7 @@ extern process *ProcessArray[4];
 int NumberOfProcesses;
 int NumberOfReferences = 0;
 heap *RunningQueue;
-int RandomNumbers[100000];
+fifo_queue *RandomNumbers;
 
 int main (int argc, char *argv[])
 {
@@ -218,12 +218,13 @@ void GetRandomNumbers(char *filename)
     char buffer[256];
     FILE *fp = NULL;
     if((fp = fopen(filename, "r"))) {
+        RandomNumbers = fifo_queue_new();
         while (!feof(fp)) {
             fgets(buffer, 256, fp); // read a line
- 
-            // tokenize the line by commas and newlines
-             if(strlen(buffer) > 1) {
-                // do something with strtol(temp, NULL, 10);
+            if(strlen(buffer) > 1) {
+                int *val = malloc(sizeof(int));
+                *val = strtol(buffer, NULL, 10);
+                enqueue(RandomNumbers, val);
             }
         }
         fclose(fp);
@@ -237,7 +238,8 @@ void GetRandomNumbers(char *filename)
 
 int GetNextRandomNumber()
 {
-    return 1;
+    int *val = dequeue(RandomNumbers);
+    return val != NULL ? *val : -1;
 }
 
 // print the command line usage
