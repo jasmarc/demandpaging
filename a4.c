@@ -15,6 +15,7 @@ extern process *ProcessArray[4];
 int NumberOfProcesses;
 int NumberOfReferences = 0;
 heap *RunningQueue;
+int RandomNumbers[100000];
 
 int main (int argc, char *argv[])
 {
@@ -86,6 +87,7 @@ int main (int argc, char *argv[])
     printf("lru   = %d\n", lru);
     printf("filename = %s\n", filename);
     run();
+    printf("done\n");
     return 0;
 }
 

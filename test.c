@@ -3,6 +3,7 @@
 #include "frameentry.h"
 #include "frametable.h"
 #include "a4.h"
+#include "fifo.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -12,42 +13,6 @@ heap *h;
 
 static char * setup() {
     return 0;
-}
-
-void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename)
-{
-    char buffer[256];
-    FILE *fp = NULL;
-    if((fp = fopen(filename, "r"))) {
-        while (!feof(fp)) {
-            fgets(buffer, 256, fp); // read a line
- 
-            // tokenize the line by commas and newlines
-/*             if(strlen(buffer) > 1) {
-                if((temp = strtok(buffer, ",\n")) != NULL && strlen(temp) > 0)
-                    arrive += strtol(temp, NULL, 10);
-                if((temp = strtok(NULL, ",\n")) != NULL && strlen(temp) > 0)
-                    burst = strtol(temp, NULL, 10);
-                job *temp = malloc(sizeof(job)); // create a new job
-                build_job(temp, i++, arrive, burst); // populate it
-                heap_insert(h, comp_func, temp); // stick it in the queue
-            } */
-            printf("%s", buffer);
-        }
-        fclose(fp);
-    }
-    else {
-        fprintf(stderr, "error opening file %s\n", filename);
-        exit(1);
-    }
-    return;
-}
-
-int fcfs_int_comparison(void *a, void *b)
-{
-    int retval;
-    retval = (int*)a - (int*)b;
-    return retval;
 }
 
 static char * test_boolean() {
@@ -117,10 +82,15 @@ static char * test_frame_table() {
     return 0;
 }
 
-static char * test_read_file() {
-    heap *Q_Random_Integers = malloc(sizeof(heap));
-    heap_init(Q_Random_Integers);
-    GetRandomNumbers(Q_Random_Integers, &fcfs_int_comparison, "input.txt");
+static char * test_fifo() {
+    fifo_queue *fq = fifo_queue_new();
+    int *a, *b;
+    a = malloc(sizeof(int));
+    b = malloc(sizeof(int));
+    *a = 5;
+    *b = 6;
+    queue(fq, a);
+    queue(fq, b);
     return 0;
 }
 
@@ -132,7 +102,7 @@ static char * all_tests() {
     mu_run_test(test_process);
     mu_run_test(test_frame_entry);
     mu_run_test(test_frame_table);
-    mu_run_test(test_read_file);
+    mu_run_test(test_fifo);
     return 0;
 }
 
