@@ -1,8 +1,8 @@
 #include "process.h"
 
-void process_new(process *p, int ID, double A, double B, double C, int R)
+process *process_new(int ID, double A, double B, double C, int R)
 {
-    p = malloc(sizeof(process));
+    process *p = malloc(sizeof(process));
     p->A                  = A;
     p->B                  = B;
     p->C                  = C;
@@ -15,5 +15,5 @@ void process_new(process *p, int ID, double A, double B, double C, int R)
     p->Random             = 0;
     p->Terminated         = FALSE;
     p->TotalResidency     = 0;
-    return;
+    return p;
 }

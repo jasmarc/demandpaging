@@ -2,6 +2,9 @@
 #define TRUE 1
 #define FALSE 0
 
+#ifndef FRAME_ENTRY_H
+#define FRAME_ENTRY_H
+
 typedef struct {
     int cpu_time;
     int empty;
@@ -12,4 +15,6 @@ typedef struct {
     int process_id;
 } frame_entry;
 
-void frame_entry_new(frame_entry *f);
+frame_entry *frame_entry_new();
+
+#endif /* FRAME_ENTRY_H */

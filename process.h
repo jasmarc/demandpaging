@@ -2,6 +2,9 @@
 #define TRUE 1
 #define FALSE 0
 
+#ifndef PROCESS_H
+#define PROCESS_H
+
 typedef struct {
     double A;
     double B;
@@ -17,4 +20,6 @@ typedef struct {
     int TotalResidency;
 } process;
 
-void process_new(process *p, int ID, double A, double B, double C, int R);
+process *process_new(int ID, double A, double B, double C, int R);
+
+#endif /* PROCESS_H */

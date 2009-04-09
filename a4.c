@@ -8,15 +8,18 @@ int machine_size   = 0,
     fifo           = 0,
     clock          = 0,
     lru            = 0,
-    ReplacementAlgorithim = 0,
+    algorithm      = 0,
     no_pager       = 1;
 char *filename = NULL;
-    
+extern process *ProcessArray[4];
+int NumberOfProcesses;
+int NumberOfReferences = 0;
 heap *RunningQueue;
 
 void SetJobMix(int j);
 void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename);
-int fcfs_comparison(void *a, void *b);
+int fcfs_int_comparison(void *a, void *b);
+int fcfs_process_comparison(void *a, void *b);
 
 int main (int argc, char *argv[])
 {
@@ -55,7 +58,7 @@ int main (int argc, char *argv[])
         case 'r':
             subopts = optarg;
             while(*subopts != '\0')
-                switch(ReplacementAlgorithim = getsubopt(&subopts, pager_opts, &value))
+                switch(algorithm = getsubopt(&subopts, pager_opts, &value))
             {
                 case FIFO:
                     fifo = 1;
@@ -91,10 +94,17 @@ int main (int argc, char *argv[])
     return 0;
 }
 
-int fcfs_comparison(void *a, void *b)
+int fcfs_int_comparison(void *a, void *b)
 {
     int retval;
     retval = (int*)a - (int*)b;
+    return retval;
+}
+
+int fcfs_process_comparison(void *a, void *b)
+{
+    int retval;
+    retval = ((process*)a)->ID - ((process*)b)->ID;
     return retval;
 }
 
@@ -110,9 +120,9 @@ void run()
     
     heap *Q_Random_Integers = malloc(sizeof(heap));
     heap_init(Q_Random_Integers);
-    GetRandomNumbers(Q_Random_Integers, &fcfs_comparison, filename);
+    GetRandomNumbers(Q_Random_Integers, &fcfs_int_comparison, filename);
     process *p = NULL;
-    while (p = heap_extract_max(RunningQueue, &fcfs_comparison))
+    while (p = heap_extract_max(RunningQueue, &fcfs_int_comparison))
     {
         for (i = 0; i < Quantum; i++)
         {
@@ -125,28 +135,27 @@ void run()
             }
             p->CurrentReference = nextReference;
             frame_entry *entry = NULL;
-            // todo: implement
-            // switch(ReplacementAlgorithim)
-            // {
-            //     case FIFO:
-            //         entry = simulate_fifo(frame_table, GetPage(p->CurrentReference), num, p->ID);
-            //         break;
-            //     case CLOCK:
-            //         entry = simulate_random(frame_table, GetPage(p->CurrentReference), num, p->ID);
-            //         break;
-            //     case LRU:
-            //         entry = simulate_lru(frame_table, GetPage(p->CurrentReference), num, p->ID);
-            //         break;
-            //     default:
-            //         // todo: error handling
-            //         break;
-            // }
+            switch(algorithm)
+            {
+                case FIFO:
+                    entry = simulate_fifo(frame_table, p->CurrentReference / page_size, num, p->ID);
+                    break;
+                // case CLOCK:
+                //     entry = simulate_random(frame_table, GetPage(p->CurrentReference), num, p->ID);
+                //     break;
+                // case LRU:
+                //     entry = simulate_lru(frame_table, GetPage(p->CurrentReference), num, p->ID);
+                //     break;
+                default:
+                    // todo: error handling
+                    break;
+            }
             if (entry->PageFault)
             {
                 num5++;
             }
             p->NumberOfReferences--;
-            num2 = *(int*)heap_extract_max(Q_Random_Integers, fcfs_comparison) / 2147483648;
+            num2 = *(int*)heap_extract_max(Q_Random_Integers, fcfs_int_comparison) / 2147483648;
             if (num2 < p->A) {
                 nextReference = (p->CurrentReference + 1) % process_size;
             }
@@ -157,7 +166,7 @@ void run()
                 nextReference = (p->CurrentReference + 4) % process_size;
             }
             else if (num2 >= ((p->A + p->B) + p->C)) {
-                int nextRandom = *(int*)heap_extract_max(Q_Random_Integers, fcfs_comparison);
+                int nextRandom = *(int*)heap_extract_max(Q_Random_Integers, fcfs_int_comparison);
                 nextReference = nextRandom % process_size;
             }
             num++;
@@ -169,7 +178,7 @@ void run()
         //RunningQueue->Dequeue();
         if (p->NumberOfReferences != 0)
         {
-            heap_insert(RunningQueue, fcfs_comparison, p);
+            heap_insert(RunningQueue, fcfs_process_comparison, p);
             Quantum = 3;
         }
     }
@@ -178,45 +187,41 @@ void run()
 
 void SetJobMix(int j)
 {
-    process *processes[4];
-    int NumberOfProcesses; // todo: move this
-    int NumberOfReferences = 0; // todo: move this
     switch(j)
     {
         case 1:
             NumberOfProcesses = 1;
-            process_new(processes[0], 1, 1.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[0] = process_new(1, 1.0, 0.0, 0.0, NumberOfReferences);
             break;
         case 2:
             NumberOfProcesses = 4;
-            process_new(processes[0], 1, 1.0, 0.0, 0.0, NumberOfReferences);
-            process_new(processes[1], 2, 1.0, 0.0, 0.0, NumberOfReferences);
-            process_new(processes[2], 3, 1.0, 0.0, 0.0, NumberOfReferences);
-            process_new(processes[3], 4, 1.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[0] = process_new(1, 1.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[1] = process_new(2, 1.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[2] = process_new(3, 1.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[3] = process_new(4, 1.0, 0.0, 0.0, NumberOfReferences);
             break;
         case 3:
             NumberOfProcesses = 4;
-            process_new(processes[0], 1, 0.0, 0.0, 0.0, NumberOfReferences);
-            process_new(processes[1], 2, 0.0, 0.0, 0.0, NumberOfReferences);
-            process_new(processes[2], 3, 0.0, 0.0, 0.0, NumberOfReferences);
-            process_new(processes[3], 4, 0.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[0] = process_new(1, 0.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[1] = process_new(2, 0.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[2] = process_new(3, 0.0, 0.0, 0.0, NumberOfReferences);
+            ProcessArray[3] = process_new(4, 0.0, 0.0, 0.0, NumberOfReferences);
             break;
         case 4:
             NumberOfProcesses = 4;
-            process_new(processes[0], 1, 0.75, 0.25, 0.0, NumberOfReferences);
-            process_new(processes[1], 2, 0.75, 0.0, 0.25, NumberOfReferences);
-            process_new(processes[2], 3, 0.75, 0.125, 0.125, NumberOfReferences);
-            process_new(processes[3], 4, 0.5, 0.125, 0.125, NumberOfReferences);
+            ProcessArray[0] = process_new(1, 0.75, 0.25, 0.0, NumberOfReferences);
+            ProcessArray[1] = process_new(2, 0.75, 0.0, 0.25, NumberOfReferences);
+            ProcessArray[2] = process_new(3, 0.75, 0.125, 0.125, NumberOfReferences);
+            ProcessArray[3] = process_new(4, 0.5, 0.125, 0.125, NumberOfReferences);
             break;
         default:
             // todo: handle error here
             break;
     }
-    // todo: enqueue processes here
     heap_init(RunningQueue);
     int i;
     for(i = 0; i < NumberOfProcesses; ++i) {
-        heap_insert(RunningQueue, &fcfs_comparison, processes[i]);
+        heap_insert(RunningQueue, &fcfs_process_comparison, ProcessArray[i]);
     }
 }
  

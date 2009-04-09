@@ -1,4 +1,7 @@
 #include "test.h"
+#include "process.h"
+#include "frameentry.h"
+#include "frametable.h"
 #define TRUE 1
 #define FALSE 0
 
@@ -53,11 +56,37 @@ static char * test_array_of_pointers() {
     return 0;
 }
 
+static char * test_process() {
+    process *p = NULL;
+    p = process_new(1,1,1,1,1);
+    mu_assert("p-> == 1", p->A == 1);
+    return 0;
+}
+
+static char * test_frame_entry() {
+    frame_entry *fe = frame_entry_new();
+    mu_assert("fe->PageFault == FALSE", fe->PageFault == FALSE);
+    return 0;
+}
+
+static char * test_frame_table() {
+    frame_table *ft = frame_table_new(2);
+    ft->framelist[0] = frame_entry_new();
+    mu_assert("frame table not null", ft != NULL);
+    mu_assert("ft->framelist", ft->framelist[0] != NULL);
+    mu_assert("ft->max", ft->max == 2);
+    mu_assert("ft->count", ft->count == 0);
+    return 0;
+}
+
 static char * all_tests() {
     mu_run_test(setup);
     mu_run_test(test_boolean);
     mu_run_test(test_atoi);
     mu_run_test(test_array_of_pointers);
+    mu_run_test(test_process);
+    mu_run_test(test_frame_entry);
+    mu_run_test(test_frame_table);
     return 0;
 }
 
