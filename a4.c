@@ -1,4 +1,5 @@
 #include "a4.h"
+#include "assert.h"
 
 int machine_size   = 0,
     page_size      = 0,
@@ -86,7 +87,9 @@ int main (int argc, char *argv[])
     printf("clock = %d\n", clock);
     printf("lru   = %d\n", lru);
     printf("filename = %s\n", filename);
+    printf("set job mix\n");
     SetJobMix(job_mix);
+    printf("run\n");
     run();
     printf("done\n");
     return 0;
@@ -104,8 +107,10 @@ void run()
     
     GetRandomNumbers(filename);
     process *p = NULL;
-    while (p = )
+    while (p = peek(RunningQueue))
     {
+        assert(p != NULL);
+	printf("process id = %d\n", p->ID);
         for (i = 0; i < Quantum; i++)
         {
             if (p->NumberOfReferences == number_of_refs) {
@@ -209,6 +214,7 @@ void SetJobMix(int j)
  
 void GetRandomNumbers(char *filename)
 {
+    printf("GetRandomNumbers\n");
     char buffer[256];
     FILE *fp = NULL;
     if((fp = fopen(filename, "r"))) {
@@ -240,7 +246,7 @@ int GetNextRandomNumber()
 void print_usage(int argc, char *argv[])
 {
     printf("usage:\t\t%s [OPTIONS]\n", argv[0]);
-    printf("example:\t%s -m9 -p3 -s3 -j4 -n5 -r fifo -i data.txt\n", argv[0]);
+    printf("example:\t%s -m9 -p3 -s3 -j4 -n5 -r fifo -i input.txt\n", argv[0]);
     printf("options:\n");
     printf(" -h\t\tPrint this message.\n");
     printf(" -i <file>\tRead comma-separated file with arrive,burst\n");

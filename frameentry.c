@@ -1,8 +1,10 @@
 #include "frameentry.h"
+#include "assert.h"
 
 frame_entry *frame_entry_new()
 {
     frame_entry *f = malloc(sizeof(frame_entry));
+    assert(f != NULL);
     f->cpu_time  = 0;
     f->empty     = FALSE;
     f->frame_id  = 0;

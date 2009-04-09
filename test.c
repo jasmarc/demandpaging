@@ -4,6 +4,7 @@
 #include "frametable.h"
 #include "a4.h"
 #include "fifo.h"
+#include "assert.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -108,6 +109,11 @@ static char * test_fifo() {
     return 0;
 }
 
+static char * test_assert() {
+    assert(1 == 1);
+    return 0;
+}
+
 static char * all_tests() {
     mu_run_test(setup);
     mu_run_test(test_boolean);
@@ -117,6 +123,7 @@ static char * all_tests() {
     mu_run_test(test_frame_entry);
     mu_run_test(test_frame_table);
     mu_run_test(test_fifo);
+    mu_run_test(test_assert);
     return 0;
 }
 
