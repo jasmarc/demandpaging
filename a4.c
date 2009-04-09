@@ -77,14 +77,26 @@ int main (int argc, char *argv[])
             break;
     }
     
-    printf("m = %d\n", machine_size);
-    printf("p = %d\n", page_size);
-    printf("s = %d\n", process_size);
-    printf("j = %d\n", job_mix);
-    printf("n = %d\n", number_of_refs);
-    printf("fifo  = %d\n", fifo);
-    printf("clock = %d\n", clock);
-    printf("lru   = %d\n", lru);
+    printf("The machine size is %d.\n", machine_size);
+    printf("The page size is %d.\n", page_size);
+    printf("The process size is %d.\n", process_size);
+    printf("The job mix numbmer is %d.\n", job_mix);
+    printf("The number of references per process is %d.\n", number_of_refs);
+    switch(algorithm)
+    {
+        case FIFO:
+            printf("The replacement algorithm is fifo.\n");
+            break;
+        case CLOCK:
+            printf("The replacement algorithm is clock.\n");
+            break;
+        case LRU:
+            printf("The replacement algorithm is lru.\n");
+            break;
+        default:
+            // todo: error handling
+            break;
+    }
     printf("filename = %s\n", filename);
     printf("set job mix\n");
     SetJobMix(job_mix);
@@ -109,7 +121,6 @@ void run()
     while (p = peek(RunningQueue))
     {
         assert(p != NULL);
-//        printf("process id = %d\n", p->ID);
         for (i = 0; i < Quantum; i++)
         {
             if (p->NumberOfReferences == number_of_refs) {
@@ -121,6 +132,8 @@ void run()
             }
             p->CurrentReference = nextReference;
             frame_entry *entry = NULL;
+            printf("%d references word %d (page %d) at time %d: ", \
+                p->ID, p->CurrentReference, p->CurrentReference / page_size, num);
             switch(algorithm)
             {
                 case FIFO:
@@ -136,8 +149,6 @@ void run()
                     // todo: error handling
                     break;
             }
-            printf("%d references word %d (page %d) at time %d\n", \
-                p->ID, p->CurrentReference, p->CurrentReference / page_size, num);
             if (entry->PageFault) {
                 num5++;
             }
