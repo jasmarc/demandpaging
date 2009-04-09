@@ -107,10 +107,10 @@ void run()
     
     GetRandomNumbers(filename);
     process *p = NULL;
-    while (p = peek(RunningQueue))
+    while (p = peek(RunningQueueueue))
     {
         assert(p != NULL);
-	printf("process id = %d\n", p->ID);
+//        printf("process id = %d\n", p->ID);
         for (i = 0; i < Quantum; i++)
         {
             if (p->NumberOfReferences == number_of_refs) {
@@ -137,8 +137,9 @@ void run()
                     // todo: error handling
                     break;
             }
-            if (entry->PageFault)
-            {
+            printf("%d references word %d (page %d) at time %d\n", \
+                p->ID, p->CurrentReference, p->CurrentReference / page_size, num);
+            if (entry->PageFault) {
                 num5++;
             }
             p->NumberOfReferences--;
