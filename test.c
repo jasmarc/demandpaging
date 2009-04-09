@@ -84,13 +84,23 @@ static char * test_frame_table() {
 
 static char * test_fifo() {
     fifo_queue *fq = fifo_queue_new();
+    mu_assert("front should be null", fq->front == NULL);
+    mu_assert("back should be null", fq->back == NULL);
+    mu_assert("dequeue an empty queue", dequeue(fq) == NULL);
     int *a, *b;
     a = malloc(sizeof(int));
     b = malloc(sizeof(int));
     *a = 5;
     *b = 6;
-    queue(fq, a);
-    queue(fq, b);
+    enqueue(fq, a);
+    enqueue(fq, b);
+    int *x, *y;
+    x = dequeue(fq);
+    y = dequeue(fq);
+    printf("a = %d, b = %d\n", *a, *b);
+    printf("x = %d, y = %d\n", *x, *y);
+    mu_assert("*x == 6", *x == 5);
+    mu_assert("*y == 5", *y == 6);
     return 0;
 }
 

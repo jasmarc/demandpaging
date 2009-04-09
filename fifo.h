@@ -15,7 +15,7 @@ typedef struct {
 
 fifo_node *fifo_node_new(void *value);
 fifo_queue *fifo_queue_new();
-fifo_node *dequeue(fifo_queue *fq);
-void queue(fifo_queue *fq, void *value);
+void *dequeue(fifo_queue *fq);
+void enqueue(fifo_queue *fq, void *value);
 
 #endif /* FIFO_QUEUE_H */
