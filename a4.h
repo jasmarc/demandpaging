@@ -25,20 +25,8 @@ char *pager_opts[] = {
 
 };
 
-// print the command line usage
-void print_usage(int argc, char *argv[])
-{
-    printf("usage:\t\t%s [OPTIONS]\n", argv[0]);
-    printf("example:\t%s -i data.txt -m1 -p2 -s3 -j4 -n5 -r fifo\n", argv[0]);
-    printf("options:\n");
-    printf(" -h\t\tPrint this message.\n");
-    printf(" -i <file>\tRead comma-separated file with arrive,burst\n");
-    printf(" -m\t\tThe machine size (in words)\n");
-    printf(" -p\t\tThe page size (in words)\n");
-    printf(" -s\t\tThe size of a processes\n");
-    printf(" -j\t\tThe 'job mix'\n");
-    printf(" -n\t\tThe number of simulated references for each process\n");
-    printf(" -r <pager(s)>\tSpecify pager(s) to use.\n");
-    printf(" \t\tValid pagers are: fifo, clock, lru\n");
-    return;
-}
+int fcfs_process_comparison(void *a, void *b);
+void GetRandomNumbers(char *filename);
+void print_usage(int argc, char *argv[]);
+void run();
+void SetJobMix(int j);

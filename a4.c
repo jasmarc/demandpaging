@@ -16,11 +16,6 @@ int NumberOfProcesses;
 int NumberOfReferences = 0;
 heap *RunningQueue;
 
-void SetJobMix(int j);
-void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename);
-int fcfs_int_comparison(void *a, void *b);
-int fcfs_process_comparison(void *a, void *b);
-
 int main (int argc, char *argv[])
 {
     char *subopts, *value;
@@ -90,15 +85,8 @@ int main (int argc, char *argv[])
     printf("clock = %d\n", clock);
     printf("lru   = %d\n", lru);
     printf("filename = %s\n", filename);
-
+    run();
     return 0;
-}
-
-int fcfs_int_comparison(void *a, void *b)
-{
-    int retval;
-    retval = (int*)a - (int*)b;
-    return retval;
 }
 
 int fcfs_process_comparison(void *a, void *b)
@@ -116,13 +104,11 @@ void run()
     int num5 = 0;
     int i = 0;
     int Quantum = 3;
-    frame_entry *frame_table[machine_size / page_size];
+    frame_table *ft = frame_table_new(machine_size / page_size);
     
-    heap *Q_Random_Integers = malloc(sizeof(heap));
-    heap_init(Q_Random_Integers);
-    GetRandomNumbers(Q_Random_Integers, &fcfs_int_comparison, filename);
+    GetRandomNumbers(filename);
     process *p = NULL;
-    while (p = heap_extract_max(RunningQueue, &fcfs_int_comparison))
+    while (p = heap_extract_max(RunningQueue, &fcfs_process_comparison))
     {
         for (i = 0; i < Quantum; i++)
         {
@@ -138,7 +124,7 @@ void run()
             switch(algorithm)
             {
                 case FIFO:
-                    entry = simulate_fifo(frame_table, p->CurrentReference / page_size, num, p->ID);
+                    entry = simulate_fifo(ft, p->CurrentReference / page_size, num, p->ID);
                     break;
                 // case CLOCK:
                 //     entry = simulate_random(frame_table, GetPage(p->CurrentReference), num, p->ID);
@@ -155,7 +141,7 @@ void run()
                 num5++;
             }
             p->NumberOfReferences--;
-            num2 = *(int*)heap_extract_max(Q_Random_Integers, fcfs_int_comparison) / 2147483648;
+            num2 = GetNextRandomNumber() / 2147483648;
             if (num2 < p->A) {
                 nextReference = (p->CurrentReference + 1) % process_size;
             }
@@ -166,7 +152,7 @@ void run()
                 nextReference = (p->CurrentReference + 4) % process_size;
             }
             else if (num2 >= ((p->A + p->B) + p->C)) {
-                int nextRandom = *(int*)heap_extract_max(Q_Random_Integers, fcfs_int_comparison);
+                int nextRandom = GetNextRandomNumber();
                 nextReference = nextRandom % process_size;
             }
             num++;
@@ -225,7 +211,7 @@ void SetJobMix(int j)
     }
 }
  
-void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename)
+void GetRandomNumbers(char *filename)
 {
     char buffer[256];
     FILE *fp = NULL;
@@ -234,16 +220,9 @@ void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename)
             fgets(buffer, 256, fp); // read a line
  
             // tokenize the line by commas and newlines
-/*             if(strlen(buffer) > 1) {
-                if((temp = strtok(buffer, ",\n")) != NULL && strlen(temp) > 0)
-                    arrive += strtol(temp, NULL, 10);
-                if((temp = strtok(NULL, ",\n")) != NULL && strlen(temp) > 0)
-                    burst = strtol(temp, NULL, 10);
-                job *temp = malloc(sizeof(job)); // create a new job
-                build_job(temp, i++, arrive, burst); // populate it
-                heap_insert(h, comp_func, temp); // stick it in the queue
-            } */
-            printf("%s", buffer);
+             if(strlen(buffer) > 1) {
+                // do something with strtol(temp, NULL, 10);
+            }
         }
         fclose(fp);
     }
@@ -253,3 +232,27 @@ void GetRandomNumbers(heap *h, int (*comp_func)(void*, void*), char *filename)
     }
     return;
 }
+
+int GetNextRandomNumber()
+{
+    return 1;
+}
+
+// print the command line usage
+void print_usage(int argc, char *argv[])
+{
+    printf("usage:\t\t%s [OPTIONS]\n", argv[0]);
+    printf("example:\t%s -i data.txt -m1 -p2 -s3 -j4 -n5 -r fifo\n", argv[0]);
+    printf("options:\n");
+    printf(" -h\t\tPrint this message.\n");
+    printf(" -i <file>\tRead comma-separated file with arrive,burst\n");
+    printf(" -m\t\tThe machine size (in words)\n");
+    printf(" -p\t\tThe page size (in words)\n");
+    printf(" -s\t\tThe size of a processes\n");
+    printf(" -j\t\tThe 'job mix'\n");
+    printf(" -n\t\tThe number of simulated references for each process\n");
+    printf(" -r <pager(s)>\tSpecify pager(s) to use.\n");
+    printf(" \t\tValid pagers are: fifo, clock, lru\n");
+    return;
+}
+
