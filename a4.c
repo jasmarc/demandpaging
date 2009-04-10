@@ -137,9 +137,9 @@ void run()
                 case FIFO:
                     entry = simulate_fifo(ft, p->CurrentReference / page_size, num, p->ID);
                     break;
-                // case CLOCK:
-                //     entry = simulate_random(frame_table, GetPage(p->CurrentReference), num, p->ID);
-                //     break;
+                case CLOCK:
+                    entry = simulate_clock(ft, p->CurrentReference / page_size, num, p->ID);
+                    break;
                 case LRU:
                     entry = simulate_lru(ft, p->CurrentReference / page_size, num, p->ID);
                     break;

@@ -3,7 +3,7 @@ This project was done as an assignment for [CSC4320 Operating Systems](http://ww
 
 ## Compilation and Usage
 Please run "make clean && make" to compile.
-You may then use a4 as described below
+You may then use a4 as described below or you may run the included run.sh shell script.
 
     usage:          ./a4 [OPTIONS]
     example:        ./a4 -m1 -p2 -s3 -j4 -n5 -r fifo -i input.txt
