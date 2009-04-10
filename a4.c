@@ -98,12 +98,9 @@ int main (int argc, char *argv[])
             break;
     }
     printf("filename = %s\n", filename);
-    printf("set job mix\n");
     SetJobMix(job_mix);
-    printf("run\n");
     run();
     Print_Result();
-    printf("done\n");
     return 0;
 }
 
