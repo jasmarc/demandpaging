@@ -10,7 +10,6 @@
 #define FALSE 0
 
 int tests_run = 0;
-heap *h;
 
 static char * setup() {
     return 0;
