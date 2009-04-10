@@ -1,4 +1,3 @@
-#include "heap.h"
 #include "fifo.h"
 #include "frametable.h"
 #include <stdarg.h>

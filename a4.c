@@ -223,7 +223,6 @@ void SetJobMix(int j)
  
 void GetRandomNumbers(char *filename)
 {
-    printf("GetRandomNumbers\n");
     char buffer[256];
     FILE *fp = NULL;
     if((fp = fopen(filename, "r"))) {
