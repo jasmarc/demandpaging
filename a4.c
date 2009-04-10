@@ -140,9 +140,9 @@ void run()
                 // case CLOCK:
                 //     entry = simulate_random(frame_table, GetPage(p->CurrentReference), num, p->ID);
                 //     break;
-                // case LRU:
-                //     entry = simulate_lru(frame_table, GetPage(p->CurrentReference), num, p->ID);
-                //     break;
+                case LRU:
+                    entry = simulate_lru(ft, p->CurrentReference / page_size, num, p->ID);
+                    break;
                 default:
                     // todo: error handling
                     break;

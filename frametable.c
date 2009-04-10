@@ -155,11 +155,11 @@ frame_entry *simulate_lru(frame_table *ft, int page, int cpu_time, int process_i
     int least_cpu_time = entry3->cpu_time;  // frame list
     int frame_to_evict = entry3->frame_id;  // 
     
-    int j; // Now loop through all the frames looking for the one with the minimum cpu_time
+    int j; // Now loop through all the frames looking for the one with the minimum last_used
     for (j = ft->count - 2; j >= 0; j--) {
         assert(j >= 0);
         entry3 = ft->framelist[j]; // grab the next one
-        if (entry3->last_used < least_cpu_time) { // we're trying to find the min cpu time
+        if (entry3->last_used < least_cpu_time) { // we're trying to find the min last_used
             least_cpu_time = entry3->last_used;
             frame_to_evict = entry3->frame_id;
         }

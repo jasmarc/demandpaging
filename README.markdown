@@ -1,10 +1,7 @@
-Demand Paging Simulator
-=======================
-
+# Demand Paging Simulator
 This project was done as an assignment for [CSC4320 Operating Systems](http://www.cs.gsu.edu/~skarmakar/csc4320_teaching.html) at [Georgia State University](http://www.cs.gsu.edu/). See [here](http://www.cs.gsu.edu/~skarmakar/cs4320/assignment4.htm) and [here](http://www.cs.gsu.edu/~skarmakar/cs4320/asg4T1Details.htm) for original assignment.
----
 
-# Compilation and Usage
+## Compilation and Usage
 Please run "make clean && make" to compile.
 You may then use a4 as described below
 
