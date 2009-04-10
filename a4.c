@@ -102,6 +102,7 @@ int main (int argc, char *argv[])
     SetJobMix(job_mix);
     printf("run\n");
     run();
+    Print_Result();
     printf("done\n");
     return 0;
 }
@@ -251,6 +252,26 @@ int GetNextRandomNumber()
 {
     int *val = dequeue(RandomNumbers);
     return val != NULL ? *val : -1;
+}
+
+void Print_Result()
+{
+    int num = 0;
+    double num2 = 0.0;
+    double num3 = 0.0;
+    int i;
+    for(i = 0; i < NumberOfProcesses; i++)
+    {
+        process *p = ProcessArray[i];
+        num += p->PageFaults;
+        num2 += p->Evicted;
+        num3 += p->TotalResidency;
+        printf("Process %d had %d faults and %f average residency.\n", \
+            p->ID,  p->PageFaults, \
+            ((double) p->TotalResidency) / ((double) p->Evicted));
+    }
+    printf("The total number of faults is: %d and the overall average residency is %f\n", \
+        num, num3/num2);
 }
 
 // print the command line usage

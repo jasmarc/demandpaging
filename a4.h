@@ -28,6 +28,7 @@ char *pager_opts[] = {
 
 int fcfs_process_comparison(void *a, void *b);
 void GetRandomNumbers(char *filename);
+void Print_Result();
 void print_usage(int argc, char *argv[]);
 void run();
 void SetJobMix(int j);
