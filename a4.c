@@ -94,7 +94,8 @@ int main (int argc, char *argv[])
             printf("The replacement algorithm is lru.\n");
             break;
         default:
-            // todo: error handling
+            fprintf(stderr, "Unknown replacement algorithm.\n");
+            exit(1);
             break;
     }
     printf("filename = %s\n", filename);
@@ -116,7 +117,7 @@ void run()
     
     GetRandomNumbers(filename);
     process *p = NULL;
-    while (p = peek(RunningQueue))
+    while ((p = peek(RunningQueue)))
     {
         assert(p != NULL);
         for (i = 0; i < Quantum; i++)
@@ -144,7 +145,8 @@ void run()
                     entry = simulate_lru(ft, p->CurrentReference / page_size, num, p->ID);
                     break;
                 default:
-                    // todo: error handling
+                    fprintf(stderr, "Unknown replacement algorithm.\n");
+                    exit(1);
                     break;
             }
             if (entry->PageFault) {
@@ -211,7 +213,8 @@ void SetJobMix(int j)
             ProcessArray[3] = process_new(4, 0.5, 0.125, 0.125, number_of_refs);
             break;
         default:
-            // todo: handle error here
+            fprintf(stderr, "Unknown job mix.\n");
+            exit(1);
             break;
     }
     RunningQueue = fifo_queue_new();

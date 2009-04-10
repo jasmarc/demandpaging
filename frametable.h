@@ -18,5 +18,7 @@ typedef struct {
 
 frame_table *frame_table_new(int frame_table_size);
 frame_entry *simulate_fifo(frame_table *ft, int page, int cpu_time, int process_id);
+frame_entry *simulate_lru(frame_table *ft, int page, int cpu_time, int process_id);
+frame_entry *simulate_clock(frame_table *ft, int page, int cpu_time, int process_id);
 
 #endif /* FRAME_TABLE_H */
